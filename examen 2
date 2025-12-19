@@ -1,0 +1,219 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.*;
+
+public class GestionProductos extends JFrame {
+
+    private JTextField txtID, txtNombre, txtPrecio, txtCantidad;
+    private JTable tabla;
+    private DefaultTableModel modelo;
+    private JButton btnAgregar, btnModificar, btnEliminar;
+
+    public GestionProductos() {
+        super("Gestión de Productos");
+        setSize(700, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        
+        JPanel panelForm = new JPanel(new GridLayout(2, 4, 10, 10));
+        txtID = new JTextField();
+        txtNombre = new JTextField();
+        txtPrecio = new JTextField();
+        txtCantidad = new JTextField();
+
+        panelForm.add(new JLabel("ID:"));
+        panelForm.add(new JLabel("Nombre:"));
+        panelForm.add(new JLabel("Precio:"));
+        panelForm.add(new JLabel("Cantidad:"));
+
+        panelForm.add(txtID);
+        panelForm.add(txtNombre);
+        panelForm.add(txtPrecio);
+        panelForm.add(txtCantidad);
+
+        
+        modelo = new DefaultTableModel(new String[]{"ID", "Nombre", "Precio", "Cantidad"}, 0);
+        tabla = new JTable(modelo);
+        JScrollPane scroll = new JScrollPane(tabla);
+
+        JPanel panelBotones = new JPanel();
+        btnAgregar = new JButton("Agregar");
+        btnModificar = new JButton("Modificar");
+        btnEliminar = new JButton("Eliminar");
+
+        panelBotones.add(btnAgregar);
+        panelBotones.add(btnModificar);
+        panelBotones.add(btnEliminar);
+
+        
+        setLayout(new BorderLayout(10, 10));
+        add(panelForm, BorderLayout.NORTH);
+        add(scroll, BorderLayout.CENTER);
+        add(panelBotones, BorderLayout.SOUTH);
+
+        
+        configurarAcciones();
+
+        
+        cargarDatos();
+        
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                guardarDatos();
+            }
+        });
+    }
+
+    private void configurarAcciones() {
+        btnAgregar.addActionListener(e -> {
+            String id = txtID.getText().trim();
+            String nombre = txtNombre.getText().trim();
+            String precioStr = txtPrecio.getText().trim();
+            String cantidadStr = txtCantidad.getText().trim();
+
+           
+            if (id.isEmpty() || nombre.isEmpty() || precioStr.isEmpty() || cantidadStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
+                return;
+            }
+
+            
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+                if (modelo.getValueAt(i, 0).equals(id)) {
+                    JOptionPane.showMessageDialog(this, "El ID ya existe.");
+                    return;
+                }
+            }
+
+            
+            double precio;
+            int cantidad;
+            try {
+                precio = Double.parseDouble(precioStr);
+                cantidad = Integer.parseInt(cantidadStr);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Precio y cantidad deben ser numéricos.");
+                return;
+            }
+
+            
+            modelo.addRow(new Object[]{id, nombre, precio, cantidad});
+            limpiarCampos();
+        });
+
+        btnModificar.addActionListener(e -> {
+            int fila = tabla.getSelectedRow();
+            if (fila == -1) {
+                JOptionPane.showMessageDialog(this, "Selecciona una fila para modificar.");
+                return;
+            }
+
+            String id = txtID.getText().trim();
+            String nombre = txtNombre.getText().trim();
+            String precioStr = txtPrecio.getText().trim();
+            String cantidadStr = txtCantidad.getText().trim();
+
+            if (id.isEmpty() || nombre.isEmpty() || precioStr.isEmpty() || cantidadStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
+                return;
+            }
+
+            
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+                if (i != fila && modelo.getValueAt(i, 0).equals(id)) {
+                    JOptionPane.showMessageDialog(this, "El ID ya existe en otra fila.");
+                    return;
+                }
+            }
+
+            double precio;
+            int cantidad;
+            try {
+                precio = Double.parseDouble(precioStr);
+                cantidad = Integer.parseInt(cantidadStr);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Precio y cantidad deben ser numéricos.");
+                return;
+            }
+
+            modelo.setValueAt(id, fila, 0);
+            modelo.setValueAt(nombre, fila, 1);
+            modelo.setValueAt(precio, fila, 2);
+            modelo.setValueAt(cantidad, fila, 3);
+
+            limpiarCampos();
+        });
+
+        btnEliminar.addActionListener(e -> {
+            int fila = tabla.getSelectedRow();
+            if (fila == -1) {
+                JOptionPane.showMessageDialog(this, "Selecciona una fila para eliminar.");
+                return;
+            }
+            modelo.removeRow(fila);
+        });
+
+        
+        tabla.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int fila = tabla.getSelectedRow();
+                if (fila != -1) {
+                    txtID.setText(modelo.getValueAt(fila, 0).toString());
+                    txtNombre.setText(modelo.getValueAt(fila, 1).toString());
+                    txtPrecio.setText(modelo.getValueAt(fila, 2).toString());
+                    txtCantidad.setText(modelo.getValueAt(fila, 3).toString());
+                }
+            }
+        });
+    }
+
+    private void limpiarCampos() {
+        txtID.setText("");
+        txtNombre.setText("");
+        txtPrecio.setText("");
+        txtCantidad.setText("");
+        txtID.requestFocus();
+    }
+
+    private void guardarDatos() {
+        try (PrintWriter pw = new PrintWriter(new FileWriter("productos.txt"))) {
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+                pw.println(
+                    modelo.getValueAt(i, 0) + ";" +
+                    modelo.getValueAt(i, 1) + ";" +
+                    modelo.getValueAt(i, 2) + ";" +
+                    modelo.getValueAt(i, 3)
+                );
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error al guardar datos: " + ex.getMessage());
+        }
+    }
+
+    private void cargarDatos() {
+        File archivo = new File("productos.txt");
+        if (!archivo.exists()) return;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] partes = linea.split(";");
+                if (partes.length == 4) {
+                    modelo.addRow(new Object[]{partes[0], partes[1], Double.parseDouble(partes[2]), Integer.parseInt(partes[3])});
+                }
+            }
+        } catch (IOException | NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Error al cargar datos: " + ex.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new GestionProductos().setVisible(true));
+    }
+}
