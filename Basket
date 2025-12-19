@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasketVibe | Dynamic Court</title>
+    <style>
+        :root {
+            --naranja-balon: #FF6600;
+            --naranja-oscuro: #E65100;
+            --crema: #FFF3E0;
+            --negro-asfalto: #1A1A1A;
+            --blanco: #FFFFFF;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Arial Black', Gadget, sans-serif;
+            background-color: var(--negro-asfalto);
+            color: var(--crema);
+            min-height: 100vh;
+        }
+
+        /* NAVEGACIÓN */
+        header {
+            background-color: var(--naranja-balon);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-size: 1.5rem; color: var(--negro-asfalto); }
+
+        /* HAMBURGUESA */
+        #menu-toggle { display: none; }
+        .menu-icon { cursor: pointer; display: flex; flex-direction: column; gap: 5px; }
+        .menu-icon span { width: 30px; height: 4px; background: var(--negro-asfalto); transition: 0.3s; }
+
+        .nav-links {
+            position: absolute; top: 100%; left: 0; width: 100%;
+            background: var(--naranja-oscuro); display: none; flex-direction: column;
+        }
+
+        .nav-links a {
+            padding: 1.5rem; text-decoration: none; color: white;
+            border-bottom: 1px solid rgba(0,0,0,0.1); cursor: pointer;
+        }
+
+        #menu-toggle:checked ~ .nav-links { display: flex; }
+
+        /* CONTENIDO DINÁMICO */
+        .main-content {
+            padding: 40px 20px;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            border-left: 5px solid var(--naranja-balon);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .content-card img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* COOKIES */
+        .cookie-banner {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 500px; background: var(--crema);
+            color: #333; padding: 20px; border-radius: 15px; z-index: 2000;
+            border: 4px solid var(--naranja-balon); text-align: center;
+        }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn { padding: 10px; flex: 1; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; }
+        .btn-accept { background: var(--naranja-balon); color: white; }
+        .btn-info { background: var(--negro-asfalto); color: white; }
+
+        @media (min-width: 768px) {
+            .nav-links { position: static; display: flex; flex-direction: row; background: none; }
+            .menu-icon { display: none; }
+            .nav-links a { border: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🏀 BASKET SHOW</div>
+        <input type="checkbox" id="menu-toggle">
+        <label for="menu-toggle" class="menu-icon">
+            <span></span><span></span><span></span>
+        </label>
+        <nav class="nav-links">
+            <a onclick="showContent('inicio')">Inicio</a>
+            <a onclick="showContent('canchas')">Canchas</a>
+            <a onclick="showContent('balones')">Equipación</a>
+        </nav>
+    </header>
+
+    <div class="main-content" id="display-area">
+        <div class="content-card">
+            <h1>Bienvenido a la Cancha</h1>
+            <p>Selecciona una opción del menú para empezar el partido.</p>
+            <img src="https://images.unsplash.com/photo-1519861531473-9200362f46b3?auto=format&fit=crop&q=80&w=600" alt="Canasta">
+        </div>
+    </div>
+
+    <div class="cookie-banner" id="cookieBanner">
+        <p>🍪 Usamos cookies para mejorar tu tiro de tres puntos. ¿Aceptas?</p>
+        <div class="btn-group">
+            <button class="btn btn-accept" onclick="document.getElementById('cookieBanner').remove()">Aceptar</button>
+            <a href="https://example.com/terminos" target="_blank" class="btn btn-info">Más información</a>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            inicio: {
+                title: "Salto Inicial",
+                text: "Prepárate para la mejor información del mundo del baloncesto callejero y profesional.",
+                img: "https://images.unsplash.com/photo-1546519638-68e109428247?auto=format&fit=crop&q=80&w=600"
+            },
+            canchas: {
+                title: "Canchas Legendarias",
+                text: "Desde el Rucker Park hasta las canchas locales, el asfalto es donde nacen las leyendas.",
+                img: "https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&q=80&w=600"
+            },
+            balones: {
+                title: "El Mejor Grip",
+                text: "Explora los mejores balones y zapatillas para dominar la pintura.",
+                img: "https://images.unsplash.com/photo-1518063319789-7217e6706b04?auto=format&fit=crop&q=80&w=600"
+            }
+        };
+
+        function showContent(key) {
+            const area = document.getElementById('display-area');
+            const item = data[key];
+            
+            area.innerHTML = `
+                <div class="content-card">
+                    <h1>${item.title}</h1>
+                    <p>${item.text}</p>
+                    <img src="${item.img}" alt="${item.title}">
+                </div>
+            `;
+            
+            // Cerrar menú hamburguesa en móvil al hacer clic
+            document.getElementById('menu-toggle').checked = false;
+        }
+    </script>
+</body>
+</html>
