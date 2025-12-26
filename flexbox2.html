@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox Pop!</title>
+    <style>
+        :root {
+            --yellow: #feca57;
+            --cyan: #48dbfb;
+            --pink: #ff9ff3;
+            --green: #1dd1a1;
+            --black: #2d3436;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        body {
+            background-color: var(--cyan);
+            padding-top: 80px;
+        }
+
+        /* --- NAVEGACIÓN --- */
+        header {
+            background: var(--white);
+            border-bottom: 5px solid var(--black);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            background: var(--yellow);
+            padding: 5px 15px;
+            border: 4px solid var(--black);
+            box-shadow: 4px 4px 0px var(--black);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--black);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-menu a:hover {
+            border-bottom: 3px solid var(--pink);
+        }
+
+        /* HAMBURGUESA */
+        .burger {
+            display: none;
+            cursor: pointer;
+            border: 3px solid var(--black);
+            padding: 5px;
+            background: var(--pink);
+        }
+
+        .burger div {
+            width: 25px;
+            height: 4px;
+            background-color: var(--black);
+            margin: 4px;
+            transition: 0.3s;
+        }
+
+        /* --- GRID DE CONTENIDO CON FLEX --- */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .intro {
+            background: var(--white);
+            border: 5px solid var(--black);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 10px 10px 0px var(--black);
+            max-width: 800px;
+        }
+
+        .flex-parent {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+        }
+
+        .flex-child {
+            background: var(--white);
+            border: 4px solid var(--black);
+            padding: 25px;
+            width: 300px;
+            box-shadow: 8px 8px 0px var(--black);
+            transition: 0.2s;
+        }
+
+        .flex-child:nth-child(1) { background: var(--yellow); }
+        .flex-child:nth-child(2) { background: var(--pink); }
+        .flex-child:nth-child(3) { background: var(--green); }
+
+        .flex-child:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px var(--black);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: absolute;
+                right: 0px;
+                height: 92vh;
+                top: 75px;
+                background-color: var(--white);
+                border-left: 5px solid var(--black);
+                flex-direction: column;
+                align-items: center;
+                width: 70%;
+                padding-top: 50px;
+                transform: translateX(100%);
+                transition: transform 0.5s ease-in;
+            }
+
+            .nav-menu.nav-active {
+                transform: translateX(0%);
+            }
+
+            .burger {
+                display: block;
+            }
+        }
+
+        /* Animación X de hamburguesa */
+        .toggle .line1 { transform: rotate(-45deg) translate(-5px, 6px); }
+        .toggle .line2 { opacity: 0; }
+        .toggle .line3 { transform: rotate(45deg) translate(-5px, -6px); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">FLEX.BOX</div>
+        <ul class="nav-menu">
+            <li><a href="#">Tutorial</a></li>
+            <li><a href="#">Generador</a></li>
+            <li><a href="#">Trucos</a></li>
+            <li><a href="#">Comunidad</a></li>
+        </ul>
+        <div class="burger" id="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <section class="intro">
+            <h1>¿Por qué Flexbox?</h1>
+            <p>Es la herramienta definitiva para crear diseños alineados sin morir en el intento. Olvídate de los "floats" y los hacks extraños.</p>
+        </section>
+
+        <div class="flex-parent">
+            <article class="flex-child">
+                <h2>01. Centrado</h2>
+                <p>Centrar un elemento hijo dentro de su padre es tan fácil como usar <code>align-items: center</code>.</p>
+            </article>
+
+            <article class="flex-child">
+                <h2>02. Orden</h2>
+                <p>Puedes cambiar el orden visual de los elementos sin tocar el HTML con la propiedad <code>order</code>.</p>
+            </article>
+
+            <article class="flex-child">
+                <h2>03. Espaciado</h2>
+                <p>Con <code>gap</code> controlas el espacio entre elementos de forma precisa y limpia.</p>
+            </article>
+        </div>
+    </div>
+
+    <script>
+        const burger = document.getElementById('burger');
+        const nav = document.querySelector('.nav-menu');
+
+        burger.addEventListener('click', () => {
+            // Abrir menú
+            nav.classList.toggle('nav-active');
+            
+            // Animación hamburguesa
+            burger.classList.toggle('toggle');
+        });
+    </script>
+</body>
+</html>

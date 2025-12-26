@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dominando Flexbox</title>
+    <style>
+        /* Variables de color */
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --accent: #fd79a8;
+            --bg: #f0f2f5;
+            --dark: #2d3436;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* --- NAVEGACIÓN FLEXBOX --- */
+        nav {
+            background: var(--primary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            color: white;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Menú Hamburguesa (Oculto por defecto) */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 20px;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .flex-demo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            flex: 1 1 250px; /* Flex-grow, shrink, basis */
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-bottom: 5px solid var(--secondary);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Se oculta el menú normal */
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: var(--primary);
+                padding: 20px;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                display: flex; /* Se muestra al hacer click */
+            }
+
+            .hamburger {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">FlexWorld 🌈</div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Propiedades</a></li>
+            <li><a href="#">Ejemplos</a></li>
+            <li><a href="#">Contacto</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>¡Domina Flexbox con Estilo!</h1>
+        <p>Aprende a alinear elementos de forma sencilla y divertida.</p>
+    </header>
+
+    <main class="container">
+        <h2>Conceptos Clave</h2>
+        
+        <div class="flex-demo">
+            <div class="card">
+                <h3>Flex Direction</h3>
+                <p>Define la dirección principal en la que se colocan los elementos (row o column).</p>
+            </div>
+            <div class="card">
+                <h3>Justify Content</h3>
+                <p>Alinea los elementos a lo largo del eje principal (centro, inicio, fin o espacio entre ellos).</p>
+            </div>
+            <div class="card">
+                <h3>Align Items</h3>
+                <p>Controla cómo se alinean los elementos en el eje secundario (verticalmente si es una fila).</p>
+            </div>
+            <div class="card">
+                <h3>Flex Wrap</h3>
+                <p>Permite que los elementos pasen a la siguiente línea si no hay suficiente espacio.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            // Animación simple del icono
+            hamburger.classList.toggle('toggle');
+        });
+    </script>
+
+</body>
+</html>
